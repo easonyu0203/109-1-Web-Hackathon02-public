@@ -62,21 +62,39 @@ class Sudoku extends Component {
 			}
 		}
 		this.setState({conflicts});
-		// this.setState({ gameBoardBorderStyle: "8px solid #E77" });
-		// setTimeout(this.originGameBordStyle, 1000);
+		
+		
 		if(conflicts.length === 0){
 			return true;
 		}
 		else{
+			
+			this.setState({ gameBoardBorderStyle: "8px solid #E77" });
+			setTimeout(() => {
+			let gameBoardBorderStyle = "8px solid #333";
+			this.setState({ gameBoardBorderStyle });
+			}, 1000);
 			return false;
 		}
 	}
 
-	originGameBordStyle = () => {
-		console.log("change back");
-		console.log(this);
-		this.setState({ gameBordBoarderStyle: "8px solid #333" });
+	checkWin = ()=>{
+		for(let i = 0; i < 9; i++){
+			for(let j = 0; j < 9; j++){
+				if(this.state.gridValues[i][j] === "0"){
+					console.log("not yet!!");
+					return false;
+				}
+			}
+		}
+		this.setState({ completeFlag: true });
+		setTimeout(() => {
+			let completeFlag = false;
+			this.setState({ completeFlag });
+		}, 2500);
+		return true;
 	}
+
 
     handleKeyDownEvent = (e) => {
         // TODO
@@ -95,6 +113,7 @@ class Sudoku extends Component {
 			row[col_index] = String(number);
 			gridValues[row_index] = row;
 			this.setState({gridValues});
+			this.checkWin();
 		}
     }
 
@@ -113,6 +132,8 @@ class Sudoku extends Component {
 			row[col_index] = String(num);
 			gridValues[row_index] = row;
 			this.setState({gridValues});
+			this.checkWin()
+
 		}
     }
 
