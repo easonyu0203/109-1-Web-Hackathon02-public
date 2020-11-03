@@ -43,10 +43,12 @@ class Sudoku extends Component {
 		const {row_index, col_index} = selectedGrid;
 		for(let i = 0; i < 9; i++){
 			if(String(num) === gridValues[row_index][i]){
+				if(i === col_index){continue;}
 				conflicts.push({row_index: row_index, col_index: i });
 				// return false;
 			}
 			if(String(num) === gridValues[i][col_index]){
+				if(i === row_index){continue;}
 				conflicts.push({row_index: i, col_index: col_index });
 				// return false;
 			}
@@ -56,6 +58,7 @@ class Sudoku extends Component {
 		for(let i = row_start; i < row_start+3; i++){
 			for(let j = col_start; j < col_start+3; j++){
 				if(String(num) === gridValues[i][j]){
+					if(row_index === i && col_index === j){continue;}
 					conflicts.push({row_index: i, col_index: j });
 					// return false;
 				}
@@ -82,7 +85,6 @@ class Sudoku extends Component {
 		for(let i = 0; i < 9; i++){
 			for(let j = 0; j < 9; j++){
 				if(this.state.gridValues[i][j] === "0"){
-					console.log("not yet!!");
 					return false;
 				}
 			}
