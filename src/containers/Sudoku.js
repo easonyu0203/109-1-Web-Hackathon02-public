@@ -24,23 +24,96 @@ class Sudoku extends Component {
 
     handle_grid_1x1_click = (row_index, col_index) => {
         // TODO
-
+		let selectedGrid = {row_index: row_index, col_index: col_index};
+		this.setState({selectedGrid});
         // Useful hints:
-        // console.log(row_index, col_index)
-        // console.log(this.state.selectedGrid)
-    }
 
-    handleKeyDownEvent = (event) => {
+	}
+	
+	checkValid= (num)=>{
+		
+		let conflicts = [];
+
+		if(num === 0){
+			this.setState({conflicts});
+			return true;
+		}
+
+		const {selectedGrid, gridValues} = this.state;
+		const {row_index, col_index} = selectedGrid;
+		for(let i = 0; i < 9; i++){
+			if(String(num) === gridValues[row_index][i]){
+				conflicts.push({row_index: row_index, col_index: i });
+				// return false;
+			}
+			if(String(num) === gridValues[i][col_index]){
+				conflicts.push({row_index: i, col_index: col_index });
+				// return false;
+			}
+		}
+		let row_start = parseInt(row_index / 3) * 3;
+		let col_start = parseInt(col_index / 3) * 3;
+		for(let i = row_start; i < row_start+3; i++){
+			for(let j = col_start; j < col_start+3; j++){
+				if(String(num) === gridValues[i][j]){
+					conflicts.push({row_index: i, col_index: j });
+					// return false;
+				}
+			}
+		}
+		this.setState({conflicts});
+		// this.setState({ gameBoardBorderStyle: "8px solid #E77" });
+		// setTimeout(this.originGameBordStyle, 1000);
+		if(conflicts.length === 0){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+
+	originGameBordStyle = () => {
+		console.log("change back");
+		console.log(this);
+		this.setState({ gameBordBoarderStyle: "8px solid #333" });
+	}
+
+    handleKeyDownEvent = (e) => {
         // TODO
 
-        // Useful hints:
-        // console.log(event)
-        // if (this.state.gridValues !== null && this.state.selectedGrid.row_index !== -1 && this.state.selectedGrid.col_index !== -1 && (event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105)) {}
-        // if (this.state.problem.content[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] === "0") {}
+        if (this.state.gridValues !== null && this.state.selectedGrid.row_index !== -1 && this.state.selectedGrid.col_index !== -1 && (e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 96 && e.keyCode <= 105)) {
+				if (this.state.problem.content[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] !== "0") {
+					return;
+				}
+				const {row_index, col_index} = this.state.selectedGrid;
+				let number = (e.keyCode <=57) ? e.keyCode - 48 : e.keyCode - 96;
+				if(!this.checkValid(number)){
+					return;
+				}
+			let gridValues = [...this.state.gridValues];
+			let row = [...gridValues[row_index]] 
+			row[col_index] = String(number);
+			gridValues[row_index] = row;
+			this.setState({gridValues});
+		}
     }
 
     handleScreenKeyboardInput = (num) => {
-        // TODO
+		// TODO
+		if (this.state.gridValues !== null && this.state.selectedGrid.row_index !== -1 && this.state.selectedGrid.col_index !== -1){
+			if (this.state.problem.content[this.state.selectedGrid.row_index][this.state.selectedGrid.col_index] !== "0") {
+				return;
+			}
+			if(!this.checkValid(num)){
+				return;
+			}
+			const {row_index, col_index} = this.state.selectedGrid;
+			let gridValues = [...this.state.gridValues];
+			let row = [...gridValues[row_index]] 
+			row[col_index] = String(num);
+			gridValues[row_index] = row;
+			this.setState({gridValues});
+		}
     }
 
     componentDidMount = () => {
